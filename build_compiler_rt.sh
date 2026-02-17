@@ -96,10 +96,10 @@ if [ -d "$BUILD_DIR/compiler-rt" ] && [ ! -d "$BUILD_DIR/compiler_rt/compiler-rt
     rm -rf "$BUILD_DIR/compiler-rt"
 fi
 
-get_sources https://github.com/llvm/llvm-project.git $BRANCH "compiler-rt"
+get_sources https://github.com/earthlings-dev/llvm-project.git $BRANCH "compiler-rt"
 
 if [ $f_res -eq 1 ]; then
-  pushd "$CURRENT_BUILD_PROJECT_NAME/compiler-rt" &>/dev/null
+  pushd "$CURRENT_BUILD_PROJECT_DIR/compiler-rt" &>/dev/null
 
   if [ $(osxcross-cmp $SDK_VERSION "<=" 10.11) -eq 1 ]; then
     # https://github.com/tpoechtrager/osxcross/issues/178

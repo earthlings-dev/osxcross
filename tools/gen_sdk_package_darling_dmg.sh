@@ -57,11 +57,10 @@ set -e
 pushd $BUILD_DIR &>/dev/null
 
 FULL_CLONE=1 \
-  get_sources https://github.com/LubosD/darling-dmg.git master
+  get_sources https://github.com/earthlings-dev/darling-dmg.git master
 
 if [ $f_res -eq 1 ]; then
-  pushd $CURRENT_BUILD_PROJECT_NAME &>/dev/null
-  git reset --hard 5f64bc9a3795e0a1c307e9beb099f9035fdd864f
+  pushd $CURRENT_BUILD_PROJECT_DIR &>/dev/null
   mkdir -p build
   pushd build &>/dev/null
   $CMAKE .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$TARGET_DIR_SDK_TOOLS

@@ -135,10 +135,10 @@ build_xar
 ## Apple TAPI Library ##
 
 if [ $NEED_TAPI_SUPPORT -eq 1 ]; then
-  get_sources https://github.com/tpoechtrager/apple-libtapi.git 1300.6.5
+  get_sources https://github.com/earthlings-dev/apple-libtapi.git 1300.6.5
 
   if [ $f_res -eq 1 ]; then
-    pushd $CURRENT_BUILD_PROJECT_NAME &>/dev/null
+    pushd $CURRENT_BUILD_PROJECT_DIR &>/dev/null
     INSTALLPREFIX=$TARGET_DIR ./build.sh
     ./install.sh
     popd &>/dev/null
@@ -152,11 +152,11 @@ CCTOOLS_VERSION=986
 LINKER_VERSION=711
 
 get_sources \
-  https://github.com/tpoechtrager/cctools-port.git \
+  https://github.com/earthlings-dev/cctools-port.git \
   $CCTOOLS_VERSION-ld64-$LINKER_VERSION
 
 if [ $f_res -eq 1 ]; then
-  pushd $CURRENT_BUILD_PROJECT_NAME/cctools &>/dev/null
+  pushd $CURRENT_BUILD_PROJECT_DIR/cctools &>/dev/null
   echo ""
 
   CONFFLAGS="--prefix=$TARGET_DIR --target=$(first_supported_arch)-apple-$TARGET "

@@ -357,6 +357,7 @@ function build_success()
   local project_name=$1
   touch "$BUILD_DIR/.${CURRENT_BUILD_PROJECT_NAME}_build_complete"
   unset CURRENT_BUILD_PROJECT_NAME
+  unset CURRENT_BUILD_PROJECT_DIR
 }
 
 function build_msg()
@@ -396,7 +397,34 @@ function get_sources()
     return
   fi
 
-  git_clone_repository "${url}" "${branch}" "${project_name}"
+  local submodule_dir="${BASE_DIR}/deps/${project_name}"
+
+  if [[ -d "${submodule_dir}" ]]; then
+    # Submodule path exists — use it instead of cloning
+    git -C "${BASE_DIR}" submodule update --init "deps/${project_name}"
+    CURRENT_BUILD_PROJECT_DIR="${submodule_dir}"
+
+    local new_hash
+    new_hash=$(git -C "${submodule_dir}" rev-parse HEAD)
+    local old_hash=""
+    local hash_file="${BUILD_DIR}/.${project_name}_git_hash"
+
+    if [[ -f "${hash_file}" ]]; then
+      old_hash=$(cat "${hash_file}")
+    fi
+
+    echo -n "${new_hash}" > "${hash_file}"
+
+    if [[ "${old_hash}" != "${new_hash}" ]]; then
+      f_res=1
+    else
+      f_res=0
+    fi
+  else
+    # No submodule — fall back to clone (darling-dmg, llvm-project, etc.)
+    git_clone_repository "${url}" "${branch}" "${project_name}"
+    CURRENT_BUILD_PROJECT_DIR="${PWD}/${project_name}"
+  fi
 
   if [[ $f_res -eq 1 ]]; then
     rm -f "${build_complete_file}"
@@ -521,12 +549,10 @@ function test_compiler_cxx2b()
 
 function build_xar()
 {
-  pushd $BUILD_DIR &>/dev/null
-
-  get_sources https://github.com/tpoechtrager/xar.git master
+  get_sources https://github.com/earthlings-dev/xar.git master
 
   if [ $f_res -eq 1 ]; then
-    pushd $CURRENT_BUILD_PROJECT_NAME/xar &>/dev/null
+    pushd $CURRENT_BUILD_PROJECT_DIR/xar &>/dev/null
     CFLAGS+=" -w" \
       ./configure --prefix=$TARGET_DIR
     $MAKE -j$JOBS
@@ -534,16 +560,14 @@ function build_xar()
     popd &>/dev/null
     build_success
   fi
-
-  popd &>/dev/null
 }
 
 function build_p7zip()
 {
-  get_sources https://github.com/tpoechtrager/p7zip.git master
+  get_sources https://github.com/earthlings-dev/p7zip.git master
 
   if [ $f_res -eq 1 ]; then
-    pushd $CURRENT_BUILD_PROJECT_NAME &>/dev/null
+    pushd $CURRENT_BUILD_PROJECT_DIR &>/dev/null
 
     if [ -n "$CC" ] && [ -n "$CXX" ]; then
       [[ $CC == *clang* ]] && CC="$CC -Qunused-arguments"
@@ -563,10 +587,10 @@ function build_p7zip()
 
 function build_pbxz()
 {
-  get_sources https://github.com/tpoechtrager/pbzx.git master
+  get_sources https://github.com/earthlings-dev/pbzx.git master
 
   if [ $f_res -eq 1 ]; then
-    pushd $CURRENT_BUILD_PROJECT_NAME &>/dev/null
+    pushd $CURRENT_BUILD_PROJECT_DIR &>/dev/null
     mkdir -p $TARGET_DIR_SDK_TOOLS/bin
     verbose_cmd $CC -O2 -Wall \
                 -I $TARGET_DIR/include -L $TARGET_DIR/lib pbzx.c \

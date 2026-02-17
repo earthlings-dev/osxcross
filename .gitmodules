@@ -1,0 +1,29 @@
+[submodule "deps/xar"]
+	path = deps/xar
+	url = https://github.com/earthlings-dev/xar.git
+	branch = master
+[submodule "deps/apple-libtapi"]
+	path = deps/apple-libtapi
+	url = https://github.com/earthlings-dev/apple-libtapi.git
+	branch = 1600.0.11.8
+[submodule "deps/cctools-port"]
+	path = deps/cctools-port
+	url = https://github.com/earthlings-dev/cctools-port.git
+	branch = 1030.6.3-ld64-956.6
+[submodule "deps/p7zip"]
+	path = deps/p7zip
+	url = https://github.com/earthlings-dev/p7zip.git
+	branch = master
+[submodule "deps/pbzx"]
+	path = deps/pbzx
+	url = https://github.com/earthlings-dev/pbzx.git
+	branch = master
+[submodule "deps/darling-dmg"]
+	path = deps/darling-dmg
+	url = https://github.com/earthlings-dev/darling-dmg.git
+	branch = master
+[submodule "deps/compiler-rt"]
+	path = deps/compiler-rt
+	url = https://github.com/earthlings-dev/llvm-project.git
+	branch = release/20.x
+	shallow = true
